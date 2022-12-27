@@ -13,3 +13,16 @@ test-coverage:
 test-coverage-html:
 	go test ./test/... -coverpkg ./... -coverprofile=coverage.out && go tool cover -html=coverage.out
 ```
+
+## CircleCI
+
+```bash
+
+curl -X POST --header "Content-Type: application/json" --header "Circle-Token: $CIRCLE_TOKEN" -d '{
+  "parameters": {
+    "run-workflow-1": true,
+    "run-workflow-2": false
+  }
+}' https://circleci.com/api/v2/project/gh/OscarLlamas6/go-unit-test-coverage/pipeline
+
+```
