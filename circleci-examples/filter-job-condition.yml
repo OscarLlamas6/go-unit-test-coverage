@@ -1,0 +1,21 @@
+version: 2.1
+
+jobs:
+  my-job:
+    docker:
+      - image: cimg/base:stable
+        auth:
+          username: $DOCKERHUB_USERNAME
+          password: $DOCKERHUB_PASSWORD  # context / project UI env-var reference
+    steps:
+      - checkout
+      - when:
+          condition:
+            equal: [ master, << pipeline.git.branch >> ]
+          steps:
+            - run: echo "I am on master branch :D"
+
+workflows:
+  my-workflow:
+    jobs:
+      - my-job
