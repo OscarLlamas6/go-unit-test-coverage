@@ -2,8 +2,11 @@ version: 2.1
 
 jobs:
   hello-job:
-    machine:
-      image: ubuntu-2204:2022.07.1
+    docker:
+      - image: cimg/node:17.2.0 # the primary container, where your job's commands are run
+        auth:
+          username: $DOCKERHUB_USERNAME
+          password: $DOCKERHUB_PASSWORD  # context / project UI env-var reference
     steps:
       - checkout # check out the code in the project directory
       - run: echo "hello world" # run the `echo` command
