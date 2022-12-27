@@ -1,17 +1,21 @@
 version: 2.1
 
 jobs:
-  hello-job:
+  my-job:
     docker:
-      - image: cimg/node:17.2.0 # the primary container, where your job's commands are run
+      - image: cimg/base:stable
         auth:
           username: $DOCKERHUB_USERNAME
           password: $DOCKERHUB_PASSWORD  # context / project UI env-var reference
     steps:
-      - checkout # check out the code in the project directory
-      - run: echo "hello world using Docker auth with env var" # run the `echo` command
+      - checkout
+      - when:
+          condition:
+            equal: [ master, << pipeline.git.branch >> ]
+          steps:
+            - run: echo "I am on master branch :D"
 
 workflows:
   my-workflow:
     jobs:
-      - hello-job
+      - my-job
