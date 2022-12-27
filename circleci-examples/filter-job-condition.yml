@@ -1,7 +1,7 @@
 version: 2.1
 
 jobs:
-  my-job1:
+  my-job:
     docker:
       - image: cimg/base:stable
         auth:
@@ -9,27 +9,13 @@ jobs:
           password: $DOCKERHUB_PASSWORD  # context / project UI env-var reference
     steps:
       - checkout
-      - run: echo "Hello from workflow-1 :D"
-  my-job2:
-    docker:
-      - image: cimg/base:stable
-        auth:
-          username: $DOCKERHUB_USERNAME
-          password: $DOCKERHUB_PASSWORD  # context / project UI env-var reference
-    steps:
-      - checkout
-      - run: echo "Hello from workflow-1 :D"
+      - when:
+          condition:
+            equal: [ master, << pipeline.git.branch >> ]
+          steps:
+            - run: echo "I am on master branch :D"
 
 workflows:
-  workflow-1:
-    when:
-    and:
-      - equal: [ master, << pipeline.git.branch >> ]
+  my-workflow:
     jobs:
-      - my-job1
-  workflow-2:
-    when:
-    and:
-      - equal: [ develop, << pipeline.git.branch >> ]
-    jobs:
-      - my-job2
+      - my-job
