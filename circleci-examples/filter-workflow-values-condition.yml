@@ -1,13 +1,5 @@
 version: 2.1
 
-parameters:
-  run-workflow-1:
-    type: boolean
-    default: false
-  run-workflow-2:
-    type: boolean
-    default: false
-
 jobs:
   my-job1:
     docker:
@@ -30,10 +22,16 @@ jobs:
 
 workflows:
   workflow-1:
-    when: << pipeline.parameters.run-workflow-1 >>
+    when:
+      and:
+      - equal: [ scheduled_pipeline, << pipeline.trigger_source >> ]
+      - equal: [ daily_build, << pipeline.schedule.name >> ]
     jobs:
       - my-job1
   workflow-2:
-    when: << pipeline.parameters.run-workflow-2 >>
+    when:
+      and:
+      - equal: [ scheduled_pipeline, << pipeline.trigger_source >> ]
+      - equal: [ nightly_build, << pipeline.schedule.name >> ]
     jobs:
       - my-job2
