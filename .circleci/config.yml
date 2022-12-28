@@ -1,5 +1,13 @@
 version: 2.1
 
+parameters:
+  run-workflow-1:
+    type: boolean
+    default: false
+  run-workflow-2:
+    type: boolean
+    default: false
+
 jobs:
   my-job1:
     docker:
@@ -10,6 +18,7 @@ jobs:
     steps:
       - checkout
       - run: echo "Hello from workflow-1 :D"
+      - run: echo "Bye from workflow-1 :D"
   my-job2:
     docker:
       - image: cimg/base:stable
@@ -19,37 +28,13 @@ jobs:
     steps:
       - checkout
       - run: echo "Hello from workflow-2 :D"
-  my-job3:
-    docker:
-      - image: cimg/base:stable
-        auth:
-          username: $DOCKERHUB_USERNAME
-          password: $DOCKERHUB_PASSWORD  # context / project UI env-var reference
-    steps:
-      - checkout
-      - run: echo "Hello from workflow-3 :D"
-  my-job4:
-    docker:
-      - image: cimg/base:stable
-        auth:
-          username: $DOCKERHUB_USERNAME
-          password: $DOCKERHUB_PASSWORD  # context / project UI env-var reference
-    steps:
-      - checkout
-      - run: echo "Hello from workflow-4 :D"
 
 workflows:
   workflow-1:
-    when:
-      and:
-        - equal: [ master, << pipeline.git.branch >> ]
+    when: << pipeline.parameters.run-workflow-1 >>
     jobs:
       - my-job1
-      - my-job3
   workflow-2:
-    when:
-      and:
-        - equal: [ develop, << pipeline.git.branch >> ]
+    when: << pipeline.parameters.run-workflow-2 >>
     jobs:
       - my-job2
-      - my-job4
